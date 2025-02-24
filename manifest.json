@@ -1,0 +1,9 @@
+{
+  "name": "Power-Up Presupuestos",
+  "description": "Genera presupuestos desde Trello",
+  "author": "JC",
+  "version": "1.0.0",
+  "capabilities": [
+    "card-buttons"
+  ]
+}
