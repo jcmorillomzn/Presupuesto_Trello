@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8">
   <title>Nuevo Presupuesto</title>
+  <!-- Librería de Trello para Power-Ups -->
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <!-- Nuestro script con la inicialización del Power-Up -->
+  <script src="./script.js"></script>
   <style>
     /* Estilos Globales */
     body {
@@ -195,7 +198,7 @@
       } else {
         // Finalización: aquí simulas la generación del presupuesto
         alert('Presupuesto generado (simulado).');
-        // Podrías implementar jsPDF o enviar el HTML a una API para convertirlo en PDF.
+        // Podrías integrar jsPDF o enviar el HTML a una API para convertirlo en PDF.
         // Por ejemplo: TrelloPowerUp.iframe().closeModal('Presupuesto generado.');
       }
     });
@@ -282,19 +285,20 @@
       document.getElementById('summaryClientEmail').textContent = document.getElementById('clientEmail').value;
       const summaryArticlesDiv = document.getElementById('summaryArticles');
       summaryArticlesDiv.innerHTML = '';
+      let total = 0;
       selectedArticles.forEach(article => {
         const p = document.createElement('p');
-        p.textContent = article.name + " x " + article.quantity + " = $" + (article.price * article.quantity).toFixed(2);
+        const lineTotal = article.price * article.quantity;
+        p.textContent = `${article.name} x ${article.quantity} = $${lineTotal.toFixed(2)}`;
         summaryArticlesDiv.appendChild(p);
+        total += lineTotal;
       });
-      let total = selectedArticles.reduce((acc, article) => acc + (article.price * article.quantity), 0);
       document.getElementById('summaryTotal').textContent = total.toFixed(2);
     }
 
     // (Opcional) Generar presupuesto en PDF
     document.getElementById('generatePdfButton').addEventListener('click', () => {
-      // Aquí podrías integrar jsPDF u otra librería para generar el PDF
-      alert('Generar PDF (simulado).');
+      alert('Generar PDF (simulado). Aquí podrías integrar jsPDF u otra librería.');
     });
   </script>
 </body>
