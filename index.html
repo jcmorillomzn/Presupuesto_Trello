@@ -8,6 +8,11 @@
   <!-- Nuestro script con la inicialización (script.js) -->
   <script src="./script.js"></script>
   <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Evita scrolls externos */
+    }
     :root {
       /* Valores por defecto */
       --main-bg: #f5af19;
@@ -19,12 +24,11 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 20px;
       background: var(--main-bg);
       background-attachment: fixed;
       background-size: cover;
       color: var(--text-color);
+      height: 100vh;
     }
     .container {
       background: var(--modal-bg);
@@ -33,6 +37,8 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 20px;
+      max-height: 90vh; /* Limita el alto del contenedor */
+      overflow-y: auto; /* Scroll interno si el contenido excede */
     }
     .company-info {
       text-align: center;
@@ -64,6 +70,10 @@
       display: flex;
       justify-content: space-between;
       margin-top: 20px;
+      position: sticky;
+      bottom: 0;
+      background: var(--modal-bg);
+      padding-top: 10px;
     }
     input[type="text"],
     input[type="email"],
@@ -332,6 +342,7 @@
     const clientPhoneInput = document.getElementById('clientPhone');
     const clientEmailInput = document.getElementById('clientEmail');
     const rememberClientCheckbox = document.getElementById('rememberClient');
+    // Para el resumen de datos extendido
     const summaryClientDetails = document.getElementById('summaryClientDetails');
 
     function loadSavedClients() {
@@ -506,7 +517,7 @@
       summaryTotalSpan.textContent = total.toFixed(2);
     }
 
-    // Generar PDF (simulado)
+    // =================== GENERAR PDF (SIMULADO) ===================
     document.getElementById('generatePdfButton').addEventListener('click', () => {
       alert('Generar PDF con datos de empresa y cliente (simulado).');
     });
