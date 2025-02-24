@@ -7,12 +7,13 @@ TrelloPowerUp.initialize({
       text: 'Nuevo Presupuesto',
       callback: function(t) {
         // Abrimos el modal con index.html
-        return t.modal({
-          url: './index.html',
-          accentColor: '#FF9F1C',
-          height: 600,
-          title: 'Nuevo Presupuesto'
-        });
+       return t.modal({
+  url: './index.html',
+  accentColor: '#FF9F1C',
+  height: 800, // Aumentado de 600 a 800
+  title: 'Nuevo Presupuesto'
+});
+
       }
     }];
   },
