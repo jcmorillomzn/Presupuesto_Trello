@@ -379,7 +379,7 @@
 
     savedClientsSelect.addEventListener('change', (e) => {
       const idx = e.target.value;
-      if (!idx && idx !== 0) return;
+      if (idx === "") return;
       loadSavedClients().then(clients => {
         const c = clients[idx];
         clientNameInput.value = c.name;
@@ -480,7 +480,6 @@
 
     // =================== PASO 3: RESUMEN ===================
     const summaryClientName = document.getElementById('summaryClientName');
-    const summaryClientAddress = document.getElementById('summaryClientAddress');
     const summaryClientDetails = document.getElementById('summaryClientDetails');
     const summaryClientPhone = document.getElementById('summaryClientPhone');
     const summaryClientEmail = document.getElementById('summaryClientEmail');
@@ -489,8 +488,8 @@
 
     function populateSummary() {
       summaryClientName.textContent = clientNameInput.value;
-      summaryClientAddress.textContent = clientStreetInput.value;
-      summaryClientDetails.textContent = clientNumberInput.value + " / " +
+      summaryClientDetails.textContent = clientStreetInput.value + " / " +
+                                         clientNumberInput.value + " / " +
                                          clientPostalCodeInput.value + " / " +
                                          clientCityInput.value;
       summaryClientPhone.textContent = clientPhoneInput.value;
@@ -512,7 +511,7 @@
       alert('Generar PDF con datos de empresa y cliente (simulado).');
     });
 
-    // =================== CARGAR AL INICIAR ===================
+    // =================== INICIALIZACIÓN ===================
     window.addEventListener('load', () => {
       loadSettings().then(() => {
         populateSavedClientsDropdown();
