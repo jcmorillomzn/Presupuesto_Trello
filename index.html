@@ -5,18 +5,29 @@
   <title>Nuevo Presupuesto</title>
   <!-- Librería de Trello para Power-Ups -->
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
-  <!-- Nuestro script de inicialización del Power-Up (script.js) -->
+  <!-- Nuestro script con la inicialización (script.js) -->
   <script src="./script.js"></script>
   <style>
-    /* Estilos Globales */
+    :root {
+      /* Valores por defecto */
+      --main-bg: #f5af19;
+      --modal-bg: #ffffff;
+      --text-color: #333333;
+      --primary-color: #FF9F1C;
+      --button-color: #FF9F1C;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 20px;
-      background: #f0f0f0;
+      background: var(--main-bg);
+      background-attachment: fixed;
+      background-size: cover;
+      color: var(--text-color);
     }
     .container {
-      background: #fff;
+      background: var(--modal-bg);
       max-width: 600px;
       margin: auto;
       border-radius: 8px;
@@ -26,9 +37,8 @@
     h2 {
       text-align: center;
       margin-bottom: 20px;
-      color: #FF9F1C;
+      color: var(--primary-color);
     }
-    /* Estilos para cada paso */
     .step {
       display: none;
     }
@@ -40,7 +50,6 @@
       justify-content: space-between;
       margin-top: 20px;
     }
-    /* Inputs */
     input[type="text"],
     input[type="email"],
     input[type="tel"] {
@@ -55,14 +64,6 @@
       display: block;
       margin-bottom: 5px;
     }
-    select {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    /* Sección de artículos */
     .search-bar {
       margin-bottom: 10px;
       width: 100%;
@@ -80,13 +81,6 @@
     .article-item:hover {
       background: #f9f9f9;
     }
-    .most-used {
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: #f7f7f7;
-    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -102,76 +96,67 @@
     .total-row {
       font-weight: bold;
     }
-    /* Botones */
     .btn {
-      background-color: #FF9F1C;
+      background-color: var(--button-color);
       color: #fff;
       border: none;
       padding: 10px 20px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 16px;
+      transition: background-color 0.3s;
     }
     .btn:hover {
-      background-color: #e08d15;
+      filter: brightness(90%);
+    }
+    /* Datos de la empresa */
+    .company-info {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .company-info img {
+      max-height: 50px;
+      margin-bottom: 10px;
+    }
+    .company-info h3 {
+      margin: 0;
+      color: var(--primary-color);
+    }
+    .company-info p {
+      margin: 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Datos de la empresa (logo, nombre, dirección) -->
+    <div id="companyInfo" class="company-info" style="display: none;">
+      <img id="companyLogoImg" src="" alt="Logo Empresa">
+      <h3 id="companyNameTitle"></h3>
+      <p id="companyAddressText"></p>
+      <p id="companyPhoneText"></p>
+    </div>
+
     <h2>Nuevo Presupuesto</h2>
-    
+
     <!-- Paso 1: Datos del Cliente -->
     <div id="step1" class="step active">
       <h3>Datos del Cliente</h3>
-
-      <!-- Seleccionar un cliente guardado -->
-      <label for="savedClients">Clientes guardados:</label>
-      <select id="savedClients">
-        <option value="">-- Selecciona un cliente guardado --</option>
-      </select>
-
       <label for="clientName">Nombre:</label>
       <input type="text" id="clientName" placeholder="Nombre del cliente">
-
-      <label for="clientStreet">Calle:</label>
-      <input type="text" id="clientStreet" placeholder="Calle">
-
-      <label for="clientNumber">Número:</label>
-      <input type="text" id="clientNumber" placeholder="Número de casa">
-
-      <label for="clientPostalCode">Código Postal:</label>
-      <input type="text" id="clientPostalCode" placeholder="Código Postal">
-
-      <label for="clientCity">Ciudad:</label>
-      <input type="text" id="clientCity" placeholder="Ciudad">
-
+      <label for="clientAddress">Dirección:</label>
+      <input type="text" id="clientAddress" placeholder="Dirección">
       <label for="clientPhone">Teléfono:</label>
       <input type="tel" id="clientPhone" placeholder="Teléfono">
-
       <label for="clientEmail">Email:</label>
       <input type="email" id="clientEmail" placeholder="Email">
-
-      <!-- Recordar cliente -->
-      <label>
-        <input type="checkbox" id="rememberClient">
-        Recordar cliente para futuras ocasiones
-      </label>
     </div>
     
     <!-- Paso 2: Selección de Artículos -->
     <div id="step2" class="step">
       <h3>Selección de Artículos</h3>
       <input type="text" id="articleSearch" class="search-bar" placeholder="Buscar artículo...">
-      <div id="articleList">
-        <!-- Lista filtrable de artículos -->
-      </div>
-
-      <div class="most-used">
-        <h4>Artículos más usados</h4>
-        <div id="mostUsedArticles"></div>
-      </div>
-
+      <div id="articleList"></div>
       <h4>Artículos Seleccionados</h4>
       <table id="selectedArticlesTable">
         <thead>
@@ -182,9 +167,7 @@
             <th>Total</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Se agregarán filas aquí -->
-        </tbody>
+        <tbody></tbody>
       </table>
       <p id="grandTotal">Total: $0.00</p>
     </div>
@@ -193,14 +176,11 @@
     <div id="step3" class="step">
       <h3>Resumen del Presupuesto</h3>
       <p><strong>Cliente:</strong> <span id="summaryClientName"></span></p>
-      <p><strong>Calle / Número:</strong> <span id="summaryClientStreetNumber"></span></p>
-      <p><strong>Código Postal / Ciudad:</strong> <span id="summaryClientPostalCity"></span></p>
+      <p><strong>Dirección:</strong> <span id="summaryClientAddress"></span></p>
       <p><strong>Teléfono:</strong> <span id="summaryClientPhone"></span></p>
       <p><strong>Email:</strong> <span id="summaryClientEmail"></span></p>
-
       <h4>Artículos:</h4>
       <div id="summaryArticles"></div>
-
       <p><strong>Total:</strong> $<span id="summaryTotal">0.00</span></p>
       <button id="generatePdfButton" class="btn">Generar Presupuesto (PDF)</button>
     </div>
@@ -212,58 +192,66 @@
   </div>
 
   <script>
-    // Obtenemos la instancia del Power-Up
     const t = TrelloPowerUp.iframe();
 
-    // Variables de navegación
+    // =================== LEER CONFIGURACIÓN DE COLORES Y EMPRESA ===================
+    function loadSettings() {
+      return Promise.all([
+        t.get('member', 'private', 'mainBgColor'),
+        t.get('member', 'private', 'primaryColor'),
+        t.get('member', 'private', 'modalBackground'),
+        t.get('member', 'private', 'textColor'),
+        t.get('member', 'private', 'buttonColor'),
+        t.get('member', 'private', 'companyName'),
+        t.get('member', 'private', 'companyAddress'),
+        t.get('member', 'private', 'companyPhone'),
+        t.get('member', 'private', 'companyLogo')
+      ]).then(values => {
+        const [
+          mainBgColor,
+          primaryColor,
+          modalBackground,
+          textColor,
+          buttonColor,
+          companyName,
+          companyAddress,
+          companyPhone,
+          companyLogo
+        ] = values;
+
+        // Asignamos las variables CSS
+        if (mainBgColor) document.documentElement.style.setProperty('--main-bg', mainBgColor);
+        if (primaryColor) document.documentElement.style.setProperty('--primary-color', primaryColor);
+        if (modalBackground) document.documentElement.style.setProperty('--modal-bg', modalBackground);
+        if (textColor) document.documentElement.style.setProperty('--text-color', textColor);
+        if (buttonColor) document.documentElement.style.setProperty('--button-color', buttonColor);
+
+        // Mostrar datos de la empresa
+        const companyInfoDiv = document.getElementById('companyInfo');
+        const companyLogoImg = document.getElementById('companyLogoImg');
+        const companyNameTitle = document.getElementById('companyNameTitle');
+        const companyAddressText = document.getElementById('companyAddressText');
+        const companyPhoneText = document.getElementById('companyPhoneText');
+
+        if (companyName || companyAddress || companyPhone || companyLogo) {
+          companyInfoDiv.style.display = 'block';
+          if (companyName) companyNameTitle.textContent = companyName;
+          if (companyAddress) companyAddressText.textContent = companyAddress;
+          if (companyPhone) companyPhoneText.textContent = "Tel: " + companyPhone;
+          if (companyLogo) {
+            companyLogoImg.src = companyLogo;
+            companyLogoImg.style.display = 'inline';
+          }
+        }
+      });
+    }
+
+    // =================== NAVEGACIÓN ===================
     let currentStep = 1;
     const totalSteps = 3;
     const prevButton = document.getElementById('prevButton');
     const nextButton = document.getElementById('nextButton');
 
-    // Inputs del primer paso
-    const savedClientsSelect = document.getElementById('savedClients');
-    const clientNameInput = document.getElementById('clientName');
-    const clientStreetInput = document.getElementById('clientStreet');
-    const clientNumberInput = document.getElementById('clientNumber');
-    const clientPostalCodeInput = document.getElementById('clientPostalCode');
-    const clientCityInput = document.getElementById('clientCity');
-    const clientPhoneInput = document.getElementById('clientPhone');
-    const clientEmailInput = document.getElementById('clientEmail');
-    const rememberClientCheckbox = document.getElementById('rememberClient');
-
-    // Paso 2: Lista de productos y artículos más usados
-    const products = [
-      { id: 1, name: "Producto A", price: 10.00 },
-      { id: 2, name: "Producto B", price: 20.00 },
-      { id: 3, name: "Producto C", price: 15.50 },
-      { id: 4, name: "Producto D", price: 5.75 },
-      { id: 5, name: "Producto E", price: 12.30 }
-    ];
-
-    // Artículos más usados (ejemplo)
-    const mostUsedProducts = [
-      { id: 2, name: "Producto B", price: 20.00 },
-      { id: 3, name: "Producto C", price: 15.50 }
-    ];
-
-    const articleSearchInput = document.getElementById('articleSearch');
-    const articleListDiv = document.getElementById('articleList');
-    const mostUsedArticlesDiv = document.getElementById('mostUsedArticles');
-    const selectedArticlesTableBody = document.getElementById('selectedArticlesTable').querySelector('tbody');
-    const grandTotalP = document.getElementById('grandTotal');
-    let selectedArticles = []; // { id, name, price, quantity }
-
-    // Paso 3: Resumen
-    const summaryClientName = document.getElementById('summaryClientName');
-    const summaryClientStreetNumber = document.getElementById('summaryClientStreetNumber');
-    const summaryClientPostalCity = document.getElementById('summaryClientPostalCity');
-    const summaryClientPhone = document.getElementById('summaryClientPhone');
-    const summaryClientEmail = document.getElementById('summaryClientEmail');
-    const summaryArticlesDiv = document.getElementById('summaryArticles');
-    const summaryTotalSpan = document.getElementById('summaryTotal');
-
-    // Funciones de navegación
     function showStep(step) {
       for (let i = 1; i <= totalSteps; i++) {
         document.getElementById('step' + i).classList.remove('active');
@@ -284,88 +272,36 @@
       if (currentStep < totalSteps) {
         currentStep++;
         if (currentStep === 3) {
-          // Antes de mostrar el resumen, guardamos el cliente si está marcado "Recordar"
-          if (rememberClientCheckbox.checked) {
-            saveClientData();
-          }
           populateSummary();
         }
         showStep(currentStep);
       } else {
         // Finalización
         alert('Presupuesto generado (simulado).');
-        // Podrías cerrar el modal:
-        // t.closeModal('Presupuesto generado');
       }
     });
 
-    // ================== PASO 1: CLIENTES GUARDADOS ===================
-    function loadSavedClients() {
-      return t.get('member', 'private', 'savedClients').then(clients => {
-        return clients || [];
-      });
-    }
+    // =================== PASO 1: DATOS DEL CLIENTE ===================
+    const clientNameInput = document.getElementById('clientName');
+    const clientAddressInput = document.getElementById('clientAddress');
+    const clientPhoneInput = document.getElementById('clientPhone');
+    const clientEmailInput = document.getElementById('clientEmail');
 
-    function saveClientData() {
-      // Obtenemos la lista actual
-      loadSavedClients().then(clients => {
-        // Creamos un objeto con los datos del cliente
-        const newClient = {
-          name: clientNameInput.value.trim(),
-          street: clientStreetInput.value.trim(),
-          number: clientNumberInput.value.trim(),
-          postalCode: clientPostalCodeInput.value.trim(),
-          city: clientCityInput.value.trim(),
-          phone: clientPhoneInput.value.trim(),
-          email: clientEmailInput.value.trim()
-        };
-        // Evitamos duplicar si ya existe
-        const exists = clients.find(c =>
-          c.name === newClient.name &&
-          c.street === newClient.street &&
-          c.number === newClient.number &&
-          c.postalCode === newClient.postalCode &&
-          c.city === newClient.city &&
-          c.phone === newClient.phone &&
-          c.email === newClient.email
-        );
-        if (!exists) {
-          clients.push(newClient);
-          t.set('member', 'private', 'savedClients', clients);
-        }
-      });
-    }
+    // =================== PASO 2: ARTÍCULOS ===================
+    const products = [
+      { id: 1, name: "Producto A", price: 10.00 },
+      { id: 2, name: "Producto B", price: 20.00 },
+      { id: 3, name: "Producto C", price: 15.50 },
+      { id: 4, name: "Producto D", price: 5.75 },
+      { id: 5, name: "Producto E", price: 12.30 }
+    ];
 
-    function populateSavedClientsDropdown() {
-      loadSavedClients().then(clients => {
-        // Borramos opciones previas
-        savedClientsSelect.innerHTML = '<option value="">-- Selecciona un cliente guardado --</option>';
-        clients.forEach((client, index) => {
-          const opt = document.createElement('option');
-          opt.value = index;
-          opt.textContent = client.name + " (" + client.city + ")";
-          savedClientsSelect.appendChild(opt);
-        });
-      });
-    }
+    const articleSearchInput = document.getElementById('articleSearch');
+    const articleListDiv = document.getElementById('articleList');
+    const selectedArticlesTableBody = document.getElementById('selectedArticlesTable').querySelector('tbody');
+    const grandTotalP = document.getElementById('grandTotal');
+    let selectedArticles = [];
 
-    // Cuando el usuario elige un cliente guardado
-    savedClientsSelect.addEventListener('change', (e) => {
-      const idx = e.target.value;
-      if (!idx) return;
-      loadSavedClients().then(clients => {
-        const c = clients[idx];
-        clientNameInput.value = c.name;
-        clientStreetInput.value = c.street;
-        clientNumberInput.value = c.number;
-        clientPostalCodeInput.value = c.postalCode;
-        clientCityInput.value = c.city;
-        clientPhoneInput.value = c.phone;
-        clientEmailInput.value = c.email;
-      });
-    });
-
-    // ================== PASO 2: ARTÍCULOS ===================
     function renderProductList(filter = '') {
       articleListDiv.innerHTML = '';
       const filtered = products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
@@ -374,7 +310,6 @@
         div.className = 'article-item';
         div.textContent = `${product.name} ($${product.price.toFixed(2)})`;
         div.addEventListener('click', () => {
-          // Si ya existe, no lo agregamos
           if (!selectedArticles.find(a => a.id === product.id)) {
             selectedArticles.push({ ...product, quantity: 1 });
             renderSelectedArticles();
@@ -417,28 +352,17 @@
       grandTotalP.textContent = "Total: $" + total.toFixed(2);
     }
 
-    // Artículos más usados
-    function renderMostUsedArticles() {
-      mostUsedArticlesDiv.innerHTML = '';
-      mostUsedProducts.forEach(product => {
-        const div = document.createElement('div');
-        div.className = 'article-item';
-        div.textContent = `${product.name} ($${product.price.toFixed(2)})`;
-        div.addEventListener('click', () => {
-          if (!selectedArticles.find(a => a.id === product.id)) {
-            selectedArticles.push({ ...product, quantity: 1 });
-            renderSelectedArticles();
-          }
-        });
-        mostUsedArticlesDiv.appendChild(div);
-      });
-    }
+    // =================== PASO 3: RESUMEN ===================
+    const summaryClientName = document.getElementById('summaryClientName');
+    const summaryClientAddress = document.getElementById('summaryClientAddress');
+    const summaryClientPhone = document.getElementById('summaryClientPhone');
+    const summaryClientEmail = document.getElementById('summaryClientEmail');
+    const summaryArticlesDiv = document.getElementById('summaryArticles');
+    const summaryTotalSpan = document.getElementById('summaryTotal');
 
-    // ================== PASO 3: RESUMEN ===================
     function populateSummary() {
       summaryClientName.textContent = clientNameInput.value;
-      summaryClientStreetNumber.textContent = clientStreetInput.value + " / " + clientNumberInput.value;
-      summaryClientPostalCity.textContent = clientPostalCodeInput.value + " / " + clientCityInput.value;
+      summaryClientAddress.textContent = clientAddressInput.value;
       summaryClientPhone.textContent = clientPhoneInput.value;
       summaryClientEmail.textContent = clientEmailInput.value;
       summaryArticlesDiv.innerHTML = '';
@@ -453,22 +377,19 @@
       summaryTotalSpan.textContent = total.toFixed(2);
     }
 
-    // (Opcional) Generar presupuesto en PDF
+    // Generar PDF (simulado)
     document.getElementById('generatePdfButton').addEventListener('click', () => {
-      alert('Generar PDF (simulado). Aquí podrías integrar jsPDF u otra librería.');
+      alert('Generar PDF con logo y datos de la empresa (simulado).');
     });
 
     // Al cargar la página
     window.addEventListener('load', () => {
-      // Cargamos la lista de clientes guardados
-      populateSavedClientsDropdown();
-      // Renderizamos la lista de artículos
-      renderProductList();
-      renderMostUsedArticles();
-      showStep(currentStep);
+      loadSettings().then(() => {
+        renderProductList();
+        showStep(currentStep);
+      });
     });
 
-    // Buscador de artículos
     articleSearchInput.addEventListener('input', () => {
       renderProductList(articleSearchInput.value);
     });
