@@ -1,29 +1,24 @@
-// Inicializamos el Power-Up
 TrelloPowerUp.initialize({
-
-  // Botón en la tarjeta
   'card-buttons': function(t, options) {
     return [{
       text: 'Nuevo Presupuesto',
       callback: function(t) {
-        // Abrimos el modal con index.html
-       return t.modal({
-  url: './index.html',
-  accentColor: '#FF9F1C',
-  height: 800, // Aumentado de 600 a 800
-  title: 'Nuevo Presupuesto'
-});
-
+        // Abrir modal con index.html con altura aumentada a 800px
+        return t.modal({
+          url: './index.html',
+          accentColor: '#FF9F1C',
+          height: 800,  // Altura aumentada para evitar scroll excesivo
+          title: 'Nuevo Presupuesto'
+        });
       }
     }];
   },
-
-  // Configuración del Power-Up (show-settings)
   'show-settings': function(t, options) {
+    // Abrir modal de configuración con settings.html con altura aumentada a 800px
     return t.modal({
       url: './settings.html',
       accentColor: '#FF9F1C',
-      height: 600,
+      height: 800,  // Altura aumentada para que se muestre todo el contenido sin scroll
       title: 'Configuración de Presupuestos'
     });
   }
