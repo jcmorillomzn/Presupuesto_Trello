@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Configuración de Presupuestos</title>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f0f0;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: #FF9F1C;
+      padding: 12px;
+      text-align: center;
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 12px;
+      background: #f9f9f9;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .tabs button.active {
+      background: #fff;
+      border-bottom: 2px solid #FF9F1C;
+      font-weight: bold;
+    }
+    .tab-content {
+      padding: 15px;
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .theme-options {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    input[type="color"] {
+      width: 50px;
+      height: 40px;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .save-button {
+      width: 100%;
+      padding: 14px;
+      background: #FF9F1C;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+    .save-button:hover {
+      background: #e08d15;
+    }
+    #advancedColors {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Configuración de Presupuestos</div>
+    <div class="tabs">
+      <button id="tab-colores" class="active">Colores</button>
+      <button id="tab-empresa">Datos de la Empresa</button>
+    </div>
+    <div id="content-colores" class="tab-content active">
+      <div class="form-group">
+        <label>Elige un tema:</label>
+        <div class="theme-options">
+          <label><input type="radio" name="theme" value="rojo">Rojo</label>
+          <label><input type="radio" name="theme" value="azul">Azul</label>
+          <label><input type="radio" name="theme" value="amarillo">Amarillo</label>
+          <label><input type="radio" name="theme" value="verde">Verde</label>
+          <label><input type="radio" name="theme" value="gris">Gris</label>
+          <label><input type="radio" name="theme" value="personalizado" checked>Personalizado</label>
+        </div>
+      </div>
+      <!-- Parte avanzada (solo se muestra si "personalizado") -->
+      <div id="advancedColors">
+        <div class="form-group">
+          <label for="mainBgColor">Fondo General (detrás del modal):</label>
+          <input type="color" id="mainBgColor" value="#f5af19">
+        </div>
+        <div class="form-group">
+          <label for="primaryColor">Color Primario (títulos, highlights):</label>
+          <input type="color" id="primaryColor" value="#FF9F1C">
+        </div>
+        <div class="form-group">
+          <label for="modalBackground">Fondo del Modal:</label>
+          <input type="color" id="modalBackground" value="#ffffff">
+        </div>
+        <div class="form-group">
+          <label for="textColor">Color del Texto:</label>
+          <input type="color" id="textColor" value="#333333">
+        </div>
+        <div class="form-group">
+          <label for="buttonColor">Color de Botones:</label>
+          <input type="color" id="buttonColor" value="#FF9F1C">
+        </div>
+      </div>
+    </div>
+
+    <div id="content-empresa" class="tab-content">
+      <div class="form-group">
+        <label for="companyName">Nombre de la Empresa:</label>
+        <input type="text" id="companyName" placeholder="Mi Empresa S.L.">
+      </div>
+      <div class="form-group">
+        <label for="companyAddress">Dirección de la Empresa:</label>
+        <input type="text" id="companyAddress" placeholder="Calle, nº, Ciudad...">
+      </div>
+      <div class="form-group">
+        <label for="companyPhone">Teléfono:</label>
+        <input type="text" id="companyPhone" placeholder="Teléfono de la empresa">
+      </div>
+      <div class="form-group">
+        <label for="companyLogo">Logo (URL):</label>
+        <input type="text" id="companyLogo" placeholder="https://misitio.com/logo.png">
+      </div>
+    </div>
+
+    <button id="saveBtn" class="save-button">Guardar Configuración</button>
+  </div>
+
+  <script>
+    const t = TrelloPowerUp.iframe();
+
+    // Tabs
+    const tabColores = document.getElementById('tab-colores');
+    const tabEmpresa = document.getElementById('tab-empresa');
+    const contentColores = document.getElementById('content-colores');
+    const contentEmpresa = document.getElementById('content-empresa');
+
+    tabColores.addEventListener('click', () => {
+      tabColores.classList.add('active');
+      tabEmpresa.classList.remove('active');
+      contentColores.classList.add('active');
+      contentEmpresa.classList.remove('active');
+    });
+    tabEmpresa.addEventListener('click', () => {
+      tabEmpresa.classList.add('active');
+      tabColores.classList.remove('active');
+      contentEmpresa.classList.add('active');
+      contentColores.classList.remove('active');
+    });
+
+    // Radios de tema
+    const themeRadios = document.querySelectorAll('input[name="theme"]');
+    const advancedColorsDiv = document.getElementById('advancedColors');
+
+    // Temas predefinidos
+    const predefThemes = {
+      rojo: {
+        mainBgColor: '#e53935',
+        primaryColor: '#b71c1c',
+        modalBackground: '#ffffff',
+        textColor: '#ffffff',
+        buttonColor: '#b71c1c'
+      },
+      azul: {
+        mainBgColor: '#2196f3',
+        primaryColor: '#0d47a1',
+        modalBackground: '#ffffff',
+        textColor: '#ffffff',
+        buttonColor: '#0d47a1'
+      },
+      amarillo: {
+        mainBgColor: '#ffeb3b',
+        primaryColor: '#fbc02d',
+        modalBackground: '#ffffff',
+        textColor: '#333333',
+        buttonColor: '#f9a825'
+      },
+      verde: {
+        mainBgColor: '#4caf50',
+        primaryColor: '#2e7d32',
+        modalBackground: '#ffffff',
+        textColor: '#ffffff',
+        buttonColor: '#2e7d32'
+      },
+      gris: {
+        mainBgColor: '#9e9e9e',
+        primaryColor: '#616161',
+        modalBackground: '#ffffff',
+        textColor: '#333333',
+        buttonColor: '#424242'
+      }
+    };
+
+    // Inputs de colores
+    const mainBgColorInput = document.getElementById('mainBgColor');
+    const primaryColorInput = document.getElementById('primaryColor');
+    const modalBackgroundInput = document.getElementById('modalBackground');
+    const textColorInput = document.getElementById('textColor');
+    const buttonColorInput = document.getElementById('buttonColor');
+
+    // Datos de la empresa
+    const companyNameInput = document.getElementById('companyName');
+    const companyAddressInput = document.getElementById('companyAddress');
+    const companyPhoneInput = document.getElementById('companyPhone');
+    const companyLogoInput = document.getElementById('companyLogo');
+
+    // Al cambiar de tema
+    themeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (radio.value !== 'personalizado') {
+          const theme = predefThemes[radio.value];
+          mainBgColorInput.value = theme.mainBgColor;
+          primaryColorInput.value = theme.primaryColor;
+          modalBackgroundInput.value = theme.modalBackground;
+          textColorInput.value = theme.textColor;
+          buttonColorInput.value = theme.buttonColor;
+          advancedColorsDiv.style.display = 'none';
+        } else {
+          advancedColorsDiv.style.display = 'block';
+        }
+      });
+    });
+
+    // Cargar configuración guardada
+    Promise.all([
+      t.get('member', 'private', 'selectedTheme'),
+      t.get('member', 'private', 'mainBgColor'),
+      t.get('member', 'private', 'primaryColor'),
+      t.get('member', 'private', 'modalBackground'),
+      t.get('member', 'private', 'textColor'),
+      t.get('member', 'private', 'buttonColor'),
+      t.get('member', 'private', 'companyName'),
+      t.get('member', 'private', 'companyAddress'),
+      t.get('member', 'private', 'companyPhone'),
+      t.get('member', 'private', 'companyLogo')
+    ]).then(values => {
+      const [
+        selectedTheme,
+        mainBgColor,
+        primaryColor,
+        modalBackground,
+        textColor,
+        buttonColor,
+        companyName,
+        companyAddress,
+        companyPhone,
+        companyLogo
+      ] = values;
+
+      // Tema
+      if (selectedTheme && predefThemes[selectedTheme]) {
+        document.querySelector(`input[value="${selectedTheme}"]`).checked = true;
+        advancedColorsDiv.style.display = 'none';
+        // Asignamos los inputs
+        mainBgColorInput.value = mainBgColor;
+        primaryColorInput.value = primaryColor;
+        modalBackgroundInput.value = modalBackground;
+        textColorInput.value = textColor;
+        buttonColorInput.value = buttonColor;
+      } else if (selectedTheme === 'personalizado') {
+        document.querySelector('input[value="personalizado"]').checked = true;
+        advancedColorsDiv.style.display = 'block';
+        mainBgColorInput.value = mainBgColor || '#f5af19';
+        primaryColorInput.value = primaryColor || '#FF9F1C';
+        modalBackgroundInput.value = modalBackground || '#ffffff';
+        textColorInput.value = textColor || '#333333';
+        buttonColorInput.value = buttonColor || '#FF9F1C';
+      }
+
+      // Datos de la empresa
+      if (companyName) companyNameInput.value = companyName;
+      if (companyAddress) companyAddressInput.value = companyAddress;
+      if (companyPhone) companyPhoneInput.value = companyPhone;
+      if (companyLogo) companyLogoInput.value = companyLogo;
+    });
+
+    // Guardar
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const selectedRadio = document.querySelector('input[name="theme"]:checked');
+      const themeName = selectedRadio.value;
+
+      // Leemos los valores
+      const mainBgColor = mainBgColorInput.value;
+      const primaryColor = primaryColorInput.value;
+      const modalBackground = modalBackgroundInput.value;
+      const textColor = textColorInput.value;
+      const buttonColor = buttonColorInput.value;
+      const companyName = companyNameInput.value;
+      const companyAddress = companyAddressInput.value;
+      const companyPhone = companyPhoneInput.value;
+      const companyLogo = companyLogoInput.value;
+
+      if (themeName !== 'personalizado') {
+        // Guardamos el tema predefinido
+        const theme = predefThemes[themeName];
+        t.set('member', 'private', 'selectedTheme', themeName);
+        t.set('member', 'private', 'mainBgColor', theme.mainBgColor);
+        t.set('member', 'private', 'primaryColor', theme.primaryColor);
+        t.set('member', 'private', 'modalBackground', theme.modalBackground);
+        t.set('member', 'private', 'textColor', theme.textColor);
+        t.set('member', 'private', 'buttonColor', theme.buttonColor);
+      } else {
+        // Guardamos como personalizado
+        t.set('member', 'private', 'selectedTheme', 'personalizado');
+        t.set('member', 'private', 'mainBgColor', mainBgColor);
+        t.set('member', 'private', 'primaryColor', primaryColor);
+        t.set('member', 'private', 'modalBackground', modalBackground);
+        t.set('member', 'private', 'textColor', textColor);
+        t.set('member', 'private', 'buttonColor', buttonColor);
+      }
+
+      // Datos de la empresa
+      t.set('member', 'private', 'companyName', companyName);
+      t.set('member', 'private', 'companyAddress', companyAddress);
+      t.set('member', 'private', 'companyPhone', companyPhone);
+      t.set('member', 'private', 'companyLogo', companyLogo);
+
+      // Cerrar modal
+      t.closeModal();
+    });
+  </script>
+</body>
+</html>
