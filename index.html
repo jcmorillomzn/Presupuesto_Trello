@@ -5,7 +5,7 @@
   <title>Nuevo Presupuesto</title>
   <!-- Librería de Trello para Power-Ups -->
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
-  <!-- Nuestro script con la inicialización (script.js) -->
+  <!-- Nuestro script de inicialización (script.js) -->
   <script src="./script.js"></script>
   <style>
     html, body {
@@ -149,7 +149,7 @@
 </head>
 <body>
   <div class="container">
-    <!-- Datos de la empresa -->
+    <!-- Datos de la empresa (se muestran si se configura) -->
     <div id="companyInfo" class="company-info" style="display: none;">
       <img id="companyLogoImg" src="" alt="Logo Empresa">
       <h3 id="companyNameTitle"></h3>
@@ -233,7 +233,7 @@
   <script>
     const t = TrelloPowerUp.iframe();
 
-    // =================== CARGAR CONFIGURACIÓN DE COLORES Y EMPRESA ===================
+    // Función para cargar configuración (colores y datos de empresa)
     function loadSettings() {
       return Promise.all([
         t.get('member', 'private', 'mainBgColor'),
@@ -246,31 +246,18 @@
         t.get('member', 'private', 'companyPhone'),
         t.get('member', 'private', 'companyLogo')
       ]).then(values => {
-        const [
-          mainBgColor,
-          primaryColor,
-          modalBackground,
-          textColor,
-          buttonColor,
-          companyName,
-          companyAddress,
-          companyPhone,
-          companyLogo
-        ] = values;
-
+        const [mainBgColor, primaryColor, modalBackground, textColor, buttonColor, companyName, companyAddress, companyPhone, companyLogo] = values;
         if (mainBgColor) document.documentElement.style.setProperty('--main-bg', mainBgColor);
         if (primaryColor) document.documentElement.style.setProperty('--primary-color', primaryColor);
         if (modalBackground) document.documentElement.style.setProperty('--modal-bg', modalBackground);
         if (textColor) document.documentElement.style.setProperty('--text-color', textColor);
         if (buttonColor) document.documentElement.style.setProperty('--button-color', buttonColor);
-
-        // Mostrar datos de la empresa
+        // Mostrar datos de la empresa si están configurados
         const companyInfoDiv = document.getElementById('companyInfo');
         const companyLogoImg = document.getElementById('companyLogoImg');
         const companyNameTitle = document.getElementById('companyNameTitle');
         const companyAddressText = document.getElementById('companyAddressText');
         const companyPhoneText = document.getElementById('companyPhoneText');
-
         if (companyName || companyAddress || companyPhone || companyLogo) {
           companyInfoDiv.style.display = 'block';
           if (companyName) companyNameTitle.textContent = companyName;
@@ -295,8 +282,8 @@
         document.getElementById('step' + i).classList.remove('active');
       }
       document.getElementById('step' + step).classList.add('active');
-      prevButton.disabled = step === 1;
-      nextButton.textContent = step === totalSteps ? 'Finalizar' : 'Siguiente';
+      prevButton.disabled = (step === 1);
+      nextButton.textContent = (step === totalSteps) ? 'Finalizar' : 'Siguiente';
     }
 
     prevButton.addEventListener('click', () => {
@@ -331,7 +318,6 @@
     const clientPhoneInput = document.getElementById('clientPhone');
     const clientEmailInput = document.getElementById('clientEmail');
     const rememberClientCheckbox = document.getElementById('rememberClient');
-    // Para el resumen extendido
     const summaryClientDetails = document.getElementById('summaryClientDetails');
 
     function loadSavedClients() {
@@ -480,7 +466,6 @@
 
     // =================== PASO 3: RESUMEN ===================
     const summaryClientName = document.getElementById('summaryClientName');
-    const summaryClientDetails = document.getElementById('summaryClientDetails');
     const summaryClientPhone = document.getElementById('summaryClientPhone');
     const summaryClientEmail = document.getElementById('summaryClientEmail');
     const summaryArticlesDiv = document.getElementById('summaryArticles');
